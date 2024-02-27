@@ -58,7 +58,7 @@ for index, ligne in dataframe.iterrows():
             index=index+1
         
         #Paramètre modifiable Vérif 2
-        MarginPhy=40/100
+        MarginPhy=25/100
         #Vérif 2 - On pose A = RUL * (Max voltage - Min voltage) = MarginPhy - On peut supposer que 10% peut être modifier
         #Si A + 10%*A > Charging time > A - 10%*A OK sinon Charging time n = A
         LinearCTrule=10000*(4.3-Min_act)
