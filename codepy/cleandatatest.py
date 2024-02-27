@@ -59,7 +59,7 @@ for index, ligne in dataframe.iterrows():
         
         #Paramètre modifiable Vérif 2
         MarginPhy=25/100
-        #Vérif 2 - On pose A = RUL * (Max voltage - Min voltage) = MarginPhy - On peut supposer que 10% peut être modifier
+        #Vérif 2 - On pose A = RUL * (4.3 - Min voltage) = MarginPhy - On peut supposer que 10% peut être modifier
         #Si A + 10%*A > Charging time > A - 10%*A OK sinon Charging time n = A
         LinearCTrule=10000*(4.3-Min_act)
         if(LinearCTrule*(1+MarginPhy)>CT_act>LinearCTrule*(1-MarginPhy)):
@@ -67,6 +67,7 @@ for index, ligne in dataframe.iterrows():
         else:
             New_CT=round(LinearCTrule,1)
         
+        #Vérif 3 
         
         print('Nouvelle Ligne:CI:',New_CI,' DT:',New_DT,' Dec64:',New_Dec64,' Max:',New_Max,' Min:',New_Min,' Time415:',New_Time415,' TCC:',New_TCC,' CT:',New_CT,' RUL:',New_RUL)
         dataframe.loc[index, 'Cycle_Index'] = New_CI
