@@ -5,42 +5,48 @@ dataframe = pd.read_csv('data/Battery_RUL_test1.csv')
 
 #Tri des données
 
-#Déclaration des variables
-index=0
-
-#Déclaration des variables des colones
-#Cycle Index
-CI_act=dataframe.loc[index, 'Cycle_Index']
-CI_ant=CI_act-1
-#Discharge Time
-DT_act=dataframe.loc[index, 'Discharge Time (s)']
-DT_ant=DT_act
-#Decrement 3.6-3.4V
-Dec64_act=dataframe.loc[index, 'Decrement 3.6-3.4V (s)']
-Dec64_ant=Dec64_act
-#MaxVoltDischar
-Max_act=dataframe.loc[index, 'Max. Voltage Dischar. (V)']
-Max_ant=Max_act
-#MinVoltChar
-Min_act=dataframe.loc[index, 'Min. Voltage Charg. (V)']
-Min_ant=Min_act
-#Time4.15V
-Time415_act=dataframe.loc[index, 'Time at 4.15V (s)']
-Time415_ant=Time415_act
-#TimeConstantCurrent
-TCC_act=dataframe.loc[index, 'Time constant current (s)']
-TCC_ant=TCC_act
-#ChargingTime
-CT_act=dataframe.loc[index, 'Charging time (s)']
-CT_ant=CT_act
-#RUL
-RUL_act=dataframe.loc[index, 'RUL']
-RUL_ant=RUL_act+1
-
-#Déclaration des variables des vérifs
-
 #Lire chaque ligne du DataFrame
 for index, ligne in dataframe.iterrows():
+    
+    #Déclaration des variables
+    
+    #Déclaration des variables des colones
+    #Cycle Index
+    CI_act=dataframe.loc[index, 'Cycle_Index']
+    CI_sup=CI_act+1
+    CI_ant=CI_act-1
+    #Discharge Time
+    DT_act=dataframe.loc[index, 'Discharge Time (s)']
+    DT_sup=DT_act
+    DT_ant=DT_act
+    #Decrement 3.6-3.4V
+    Dec64_act=dataframe.loc[index, 'Decrement 3.6-3.4V (s)']
+    Dec64_sup=Dec64_act
+    Dec64_ant=Dec64_act
+    #MaxVoltDischar
+    Max_act=dataframe.loc[index, 'Max. Voltage Dischar. (V)']
+    Max_sup=Max_act
+    Max_ant=Max_act
+    #MinVoltChar
+    Min_act=dataframe.loc[index, 'Min. Voltage Charg. (V)']
+    Min_sup=Min_act
+    Min_ant=Min_act
+    #Time4.15V
+    Time415_act=dataframe.loc[index, 'Time at 4.15V (s)']
+    Time415_sup=Time415_act
+    Time415_ant=Time415_act
+    #TimeConstantCurrent
+    TCC_act=dataframe.loc[index, 'Time constant current (s)']
+    TCC_sup=TCC_act-200
+    TCC_ant=TCC_act+200
+    #ChargingTime
+    CT_act=dataframe.loc[index, 'Charging time (s)']
+    CT_sup=CT_act
+    CT_ant=CT_act
+    #RUL
+    RUL_act=dataframe.loc[index, 'RUL']
+    RUL_sup=RUL_act-1
+    RUL_ant=RUL_act+1
     if(index!=0):
         #Cycle Index
         CI_ant=dataframe.loc[index-1, 'Cycle_Index']
@@ -60,6 +66,41 @@ for index, ligne in dataframe.iterrows():
         CT_ant=dataframe.loc[index-1, 'Charging time (s)']
         #RUL
         RUL_ant=dataframe.loc[index-1, 'RUL']
+    if(index!=1075):
+        #Cycle Index
+        CI_sup=dataframe.loc[index+1, 'Cycle_Index']
+        #Discharge Time
+        DT_sup=dataframe.loc[index+1, 'Discharge Time (s)']
+        #Decrement 3.6-3.4V
+        Dec64_sup=dataframe.loc[index+1, 'Decrement 3.6-3.4V (s)']
+        #MaxVoltDischar
+        Max_sup=dataframe.loc[index+1, 'Max. Voltage Dischar. (V)']
+        #MinVoltChar
+        Min_sup=dataframe.loc[index+1, 'Min. Voltage Charg. (V)']
+        #Time4.15V
+        Time415_sup=dataframe.loc[index+1, 'Time at 4.15V (s)']
+        #TimeConstantCurrent
+        TCC_sup=dataframe.loc[index+1, 'Time constant current (s)']
+        #ChargingTime
+        CT_sup=dataframe.loc[index+1, 'Charging time (s)']
+        #RUL
+        RUL_sup=dataframe.loc[index+1, 'RUL']
+        
+        
+        
+        
+    #Déclaration des variables des vérifs
+    #Vérif Charging time
+    MarginPhyCT=25/100
+    FunctionCTrule=10000*(4.3-Min_act)
+
+    #Vérif Time constant current and Time 4.15V 
+    MarginPhyTCC=50/100
+    MarginPhyT415=50/100
+    #Vérif Decharging time
+    MarginPhyDT=25/100
+    FunctionDTrule=10000*(4.3-Min_act)
+    #Vérif Decrement 3.6-3.4V
         
     #Init Variables de modifications
     New_CI=CI_act
@@ -72,24 +113,39 @@ for index, ligne in dataframe.iterrows():
     New_CT=CT_act
     New_RUL=RUL_act
     
-    #Vérif 1 - Si Cycle Index n > Cycle Index n-1 et RUL n < RUL n-1 OK sinon RUL n = (RULn-1) - 1
+    #Vérif 1 - Si Cycle Index n > Cycle Index n-1 et RUL n < RUL n-1 OK sinon RUL 1113-CI_act
     if(CI_act > CI_ant):
         if(RUL_act > RUL_ant):
-            New_RUL=RUL_ant-1
-    else:
-        index=index+1
+            New_RUL=1113-CI_act
     
-    #Paramètre modifiable Vérif 2
-    MarginPhy=25/100
-    #Vérif 2 - On pose A = RUL * (4.3 - Min voltage) = MarginPhy - On peut supposer que 10% peut être modifier
+    #Vérif Charging time - On pose A = RUL * (4.3 - Min voltage) = MarginPhy - On peut supposer que 10% peut être modifier
     #Si A + 10%*A > Charging time > A - 10%*A OK sinon Charging time n = A
-    LinearCTrule=10000*(4.3-Min_act)
-    if(LinearCTrule*(1+MarginPhy)>CT_act>LinearCTrule*(1-MarginPhy)):
+    #On veut pouvoir faire évoluer LinearCTrule pour être de plus en plus précis dans la correction des données
+    if(FunctionCTrule*(1+MarginPhyCT)>CT_act>FunctionCTrule*(1-MarginPhyCT)):
         New_CT=CT_act
     else:
-        New_CT=round(LinearCTrule,1)
+        New_CT=round(FunctionCTrule,1)
     
-    #Vérif 3 
+    #Vérif Time constant current and Time 4.15V 
+    #La vérification concerne la validité de la corrélation entre le temps à 4.15V et le temps avec courant constant.
+    #Si ls valeurs sont incompatibles, elles sont remplacées en fonction des paramètres inférieurs et suppérieurs.
+    if(Time415_act+1000+1000*MarginPhyT415>TCC_act>Time415_act+1000-1000*MarginPhyT415 and TCC_act<10000):
+        New_TCC=TCC_act
+        New_Time415=Time415_act
+    else:
+        New_TCC=(TCC_ant+TCC_sup)/2
+        TCC_act=New_TCC
+        if(TCC_act-1000+1000*MarginPhyTCC>Time415_act>TCC_act-1000-1000*MarginPhyTCC):
+            New_Time415=Time415_act
+        else:
+            New_Time415=(Time415_sup+Time415_ant)/2
+            Time415_act=New_Time415
+            
+    #Vérif Decrement 3.6-3.4V
+    
+    #Vérif Discharge time - De même que pour la Vérif Charging time, cette vérif a pour but de supprimer les valeurs abérantes
+    #en suivant une loi idéale qui peut être mise a jour par le modèle - FunctionDTrule
+    #Dépend du Dec64 et Time415
     
     if(index==0):
         print('Ligne',index+1,': Cycle_Index|Discharge Time (s)|Decrement 3.6-3.4V (s)|Max. Voltage Dischar. (V)|Min. Voltage Charg. (V)|Time at 4.15V (s)|Time constant current (s)|Charging time (s)|RUL')
