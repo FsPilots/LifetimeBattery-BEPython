@@ -4,15 +4,7 @@ import pandas as pd
 # Charger le fichier CSV dans un DataFrame
 dataframe = pd.read_csv('data/Battery_RUL_test1.csv')
 
-# Afficher les premières lignes du DataFrame
-print(dataframe.head())
-
-#Trier les données
-#Partie 1 Données abérentes
-#Vérif 1 - Si Cycle Index n > Cycle Index n-1 et RUL n < RUL n-1 OK sinon RUL n = (RULn-1) - 1  
-#Vérif 2 - On pose RUL * (Max voltage - Min voltage) = A - On peut supposer que 10% peut être modifier
-#Si RA + 10%*A > Charging time > A - 10%*A OK sinon Charging time n = A
-#Vérif 3 - Si Discharge Time 
+#Tri des données
 
 #Lire chaque ligne du DataFrame
 for index, ligne in dataframe.iterrows():
@@ -65,9 +57,31 @@ for index, ligne in dataframe.iterrows():
         else:
             index=index+1
         
+        #Paramètre modifiable Vérif 2
+        MarginPhy=40/100
+        #Vérif 2 - On pose A = RUL * (Max voltage - Min voltage) = MarginPhy - On peut supposer que 10% peut être modifier
+        #Si A + 10%*A > Charging time > A - 10%*A OK sinon Charging time n = A
+        LinearCTrule=10000*(4.3-Min_act)
+        if(LinearCTrule*(1+MarginPhy)>CT_act>LinearCTrule*(1-MarginPhy)):
+            New_CT=CT_act
+        else:
+            New_CT=round(LinearCTrule,1)
         
         
         print('Nouvelle Ligne:CI:',New_CI,' DT:',New_DT,' Dec64:',New_Dec64,' Max:',New_Max,' Min:',New_Min,' Time415:',New_Time415,' TCC:',New_TCC,' CT:',New_CT,' RUL:',New_RUL)
+        dataframe.loc[index, 'Cycle_Index'] = New_CI
+        dataframe.loc[index, 'Discharge Time (s)'] = New_DT
+        dataframe.loc[index, 'Decrement 3.6-3.4V (s)'] = New_Dec64
+        dataframe.loc[index, 'Max. Voltage Dischar. (V)'] = New_Max
+        dataframe.loc[index, 'Min. Voltage Charg. (V)'] = New_Min
+        dataframe.loc[index, 'Time at 4.15V (s)'] = New_Time415
+        dataframe.loc[index, 'Time constant current (s)'] = New_TCC
+        dataframe.loc[index, 'Charging time (s)'] = New_CT
+        dataframe.loc[index, 'RUL'] = New_RUL
+        
+
+        # Écrire le DataFrame modifié dans un nouveau fichier CSV
+        dataframe.to_csv('data/Battery_RUItest1_sortie.csv', index=False)
 
 
 
