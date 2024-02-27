@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelBinarizer
 
 # Charger les données
 
-data = pd.read_csv("Battery_RUL.csv")
+data = pd.read_csv("C:/Users/thoma/Documents/GitHub/LifetimeBattery-BEPython/data/Battery_RUL.csv")
 
 # Supprimer les données aberrantes en utilisant la méthode de l'écart interquartile
 Q1 = data.quantile(0.25)
@@ -120,6 +120,7 @@ print("Predicted RUL:", predicted_rul)
 #Dans ce code, la fonction learn_weights entraîne un modèle de régression linéaire sur les données d'entraînement pour estimer les poids optimaux pour chaque paramètre. Ensuite, la fonction predict_rul utilise les poids appris pour prédire la durée de vie résiduelle en combinant les paramètres pondérés. Cette approche permet d'apprendre les poids à partir des données, ce qui peut améliorer les performances du modèle en utilisant une régression linéaire pour estimer les poids optimaux.
 
 def learn_weights(X, y):
+
     # Diviser les données en ensemble d'entraînement et ensemble de test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -132,7 +133,6 @@ def learn_weights(X, y):
 
     return weights
 
-
 def predict_rul(X, weights):
     # Calculer le score en combinant les paramètres pondérés
     score = X.dot(weights)
@@ -141,7 +141,25 @@ def predict_rul(X, weights):
 
 
 # Charger les données
-data = pd.read_csv("Battery_RUL.csv")  # Assure-toi de remplacer "ton_fichier.csv" par le nom de ton fichier de données
+data = pd.read_csv("C:/Users/thoma/Documents/GitHub/LifetimeBattery-BEPython/data/Battery_RUL.csv")  # Assure-toi de remplacer "ton_fichier.csv" par le nom de ton fichier de données
+
+# Identifier les valeurs aberrantes dans chaque colonne
+Q1 = data.quantile(0.25)
+Q3 = data.quantile(0.75)
+IQR = Q3 - Q1
+
+# Définir un seuil pour détecter les valeurs aberrantes (par exemple, 1.5 fois l'IQR)
+threshold = 1.5
+lower_bound = Q1 - threshold * IQR
+upper_bound = Q3 + threshold * IQR
+
+# Supprimer les lignes contenant des valeurs aberrantes dans au moins une colonne
+data_cleaned = data[~((data < lower_bound) | (data > upper_bound)).any(axis=1)]
+
+# Afficher les lignes supprimées
+outliers = data[~data.index.isin(data_cleaned.index)]
+print("Valeurs aberrantes supprimées:")
+print(outliers)
 
 # Diviser les données en caractéristiques (features) et cible (target)
 X = data[
