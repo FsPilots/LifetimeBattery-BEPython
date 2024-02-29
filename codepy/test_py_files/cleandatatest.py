@@ -71,16 +71,18 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     dataframe=dataframe.loc[dataframe['Time constant current (s)']>(datastat.loc[4,'Time constant current (s)'])/2]
     dataframe=dataframe.loc[dataframe['Charging time (s)']>(datastat.loc[4,'Charging time (s)'])/2]
     
-    #Sauvegarde intermediaire du fichier cleaned
-    temp_cleaned_stat=dataframe.descibe()
-    print(temp_cleaned_stat,'\n')
-    temp_cleaned_stat.to_csv('data/temp_data/temp_cleaned_data_stat')
-    
     #Indication taille avant retouche finales
     print('Taille intermediaire:',dataframe.shape,'\n')
     
+    #Sauvegarde intermediaire du fichier cleaned
+    temp_dataframe=dataframe
+    temp_dataframe.to_csv('data/temp_data/temp_dataframe.csv')
+    temp_cleaned_stat=temp_dataframe.describe()
+    print(temp_cleaned_stat,'\n')
+    temp_cleaned_stat.to_csv('data/temp_data/temp_cleaned_data_stat.csv')
+    
     #Retouches finales
-    print('Retouche finales:')
+    print('Retouche finales:\n')
     
     #Indicateur
     Runtime=0
@@ -88,15 +90,20 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     #Suppression des X% de valeurs les plus grandes et X% les plus petites afin d'affiner les resultats
     #Definition du paramètre X en %
     X=5
+            
+    while(Runtime==0):
         
-    while(Runtime==0 or (temp_cleaned_stat.loc[3,'Cycle_Index']!= init_stat.loc[3,'Cycle_Index'] and temp_cleaned_stat.loc[7,'Cycle_Index']!= init_stat.loc[7,'Cycle_Index'])):
+        
+        
+        #Chargement des parametres temporaires
+        temp_datastat=pd.read_csv('data/temp_data/temp_cleaned_data_stat.csv')
         
         #Affichage des parametre pour vérification
         print('Valeur Runtime:',Runtime)
         print('Valeur parametre X:',X)
-        print('Valeur Cycle Index ref: Min:',init_stat.loc[3,'Cycle_Index'],' Max:',init_stat.loc[7,'Cycle_Index'])
-        print('Valeur Cycle Index Max:',temp_cleaned_stat.loc[3,'Cycle_Index'])
-        print('Valeur Cycle Index Mix:',temp_cleaned_stat.loc[3,'Cycle_Index'],'\n')
+        print('Valeur Cycle Index ref: Min:',datastat.loc[3,'Cycle_Index'],' Max:',datastat.loc[7,'Cycle_Index'])
+        print('Valeur Cycle Index Max:',temp_datastat.loc[3,'Cycle_Index'])
+        print('Valeur Cycle Index Mix:',temp_datastat.loc[7,'Cycle_Index'],'\n')
         
         # Calculer le nombre de lignes à supprimer (X% de la taille du DataFrame)
         nb_lignes_a_supprimer = int(len(dataframe) * X/100)
@@ -107,11 +114,13 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
         # Supprimer les X% les plus élevées et les X% les plus basses
         temp_dataframe = dataframe_sorted.iloc[nb_lignes_a_supprimer:-nb_lignes_a_supprimer]
         
-        temp_cleaned_stat=temp_dataframe.descibe()
-        temp_cleaned_stat.to_csv('data/temp_data/temp_cleaned_data_stat')
+        temp_cleaned_stat=temp_dataframe.describe()
+        temp_cleaned_stat.to_csv('data/temp_data/temp_cleaned_data_stat.csv')
         
-        Runtime=Runtime+1
-        X=X/2
+        if(temp_datastat.loc[7,'Cycle_Index']==datastat.loc[3,'Cycle_Index'] and temp_datastat.loc[3,'Cycle_Index']==datastat.loc[7,'Cycle_Index']):
+           Runtime=1
+        else:
+            X=X/2
     
     
     #Enregistrement clean data
