@@ -4,16 +4,16 @@ import pandas as pd
 dataframe = pd.read_csv('data/test_data/Battery_RUL_test1.csv')
 
 #Définir un chemin de sortie des données clean
-output_clean_data_path='data/test_data/output_test2/Battery_RUItest1_sortie.csv'
+output_clean_data_path='data/test_data/output_test1/Battery_RUItest1_sortie.csv'
 
 #Définir un chemin de sortie des statistiques initiales
-output_init_datastat_path='data/test_data/output_test2/init_stat1.csv'
+output_init_datastat_path='data/test_data/output_test1/init_stat1.csv'
 
 #Définir un chemin de sortie des statistiques finales
-output_cleaned_datastat_path='data/test_data/output_test2/cleaned_data_stat1.csv'
+output_cleaned_datastat_path='data/test_data/output_test1/cleaned_data_stat1.csv'
 
 #Tri des données
-def clean_data2(dataframe,output_clean_data_path):
+def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path):
     
     #Affiche les premières valeurs pour vérifier la bonne lecture du fichier
     print(dataframe.head())
@@ -71,4 +71,4 @@ def clean_data2(dataframe,output_clean_data_path):
     cleaned_stat.to_csv(output_cleaned_datastat_path)
     
     
-clean_data2(dataframe,output_clean_data_path)
+clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path)
