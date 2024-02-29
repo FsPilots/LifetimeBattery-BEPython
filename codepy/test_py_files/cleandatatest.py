@@ -4,10 +4,10 @@ import pandas as pd
 dataframe = pd.read_csv('data/test_data/Battery_RUL_test1.csv')
 
 #Définir un chemin de sortie des données clean
-outputcleandata='data/test_data/Battery_RUItest1_sortie.csv'
+outputcleandata_path='data/test_data/Battery_RUItest1_sortie.csv'
 
 #Tri des données
-def clean_data(dataframe,outputcleandata):
+def clean_data(dataframe,outputcleandata_path):
     #Lire chaque ligne du DataFrame
     for index, ligne in dataframe.iterrows():
         
@@ -185,7 +185,6 @@ def clean_data(dataframe,outputcleandata):
         
 
         # Écrire le DataFrame modifié dans un nouveau fichier CSV
-        dataframe.to_csv(outputcleandata, index=False)
+        dataframe.to_csv(outputcleandata_path, index=False)
 
-clean_data(dataframe,outputcleandata)
 
