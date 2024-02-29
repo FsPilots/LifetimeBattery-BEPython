@@ -27,16 +27,18 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     #Affiche le nb de données après effactement des lignes vides
     print('Taille after supr na:',dataframe.shape)
     
+    #Affiche les premières statistiques
+    init_stat=dataframe.describe()
+    print(init_stat)
+    init_stat.to_csv(output_init_datastat_path)
+    
+    #Nettoyage
+    
     # Suppression des lignes contenant des valeurs négatives dans n'importe quelle colonne
     dataframe = dataframe.loc[(dataframe >= 0).all(axis=1)]
     
     #Affiche le nb de données après effactement des lignes avec valeurs négatives
     print('Taille after supr neg:',dataframe.shape)
-    
-    #Affiche les premières statistiques
-    init_stat=dataframe.describe()
-    print(init_stat)
-    init_stat.to_csv(output_init_datastat_path)
     
     #Suppression des lignes avec des erreurs (basées sur la vérification par la valeur moyenne x 2 en max)
     #Concerne les colonnes Discharge Time (s)//Decrement 3.6-3.4V (s)//Time at 4.15V (s)//Time constant current (s)//Charging time (s)
