@@ -16,10 +16,12 @@ output_cleaned_datastat_path='data/test_data/output_test1/cleaned_data_stat1.csv
 def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path):
     
     #Affiche les premières valeurs pour vérifier la bonne lecture du fichier
+    print('Affichage valeurs pour confirmer la bonne lecture:')
     print(dataframe.head(),'\n')
     
     #Affiche le nb de données
-    print('Taille initiale:',dataframe.shape)
+    init_shape=dataframe.shape
+    print('Taille initiale:',init_shape)
     
     #Suppression des lignes avec des valeurs manquantes
     dataframe=dataframe.dropna(axis=0)
@@ -29,6 +31,7 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     
     #Affiche les premières statistiques
     init_stat=dataframe.describe()
+    print('Statistiques initiales:')
     print(init_stat,'\n')
     init_stat.to_csv(output_init_datastat_path)
     
@@ -44,6 +47,7 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     datastat = pd.read_csv(output_init_datastat_path)
     
     #Affiche les premières valeurs pour vérifier la bonne lecture du fichier
+    print('Affichage valeurs pour confirmer la bonne lecture:')
     print(datastat.head(),'\n')
     
     print('Moyenne des parametres initiaux:')
@@ -72,38 +76,33 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     dataframe=dataframe.loc[dataframe['Charging time (s)']>(datastat.loc[4,'Charging time (s)'])/2]
     
     #Indication taille avant retouche finales
-    print('Taille intermediaire:',dataframe.shape,'\n')
+    intermediaire_shape=dataframe.shape
+    print('Taille intermediaire:',intermediaire_shape,'\n')
     
     #Sauvegarde intermediaire du fichier cleaned
     temp_dataframe=dataframe
-    temp_dataframe.to_csv('data/temp_data/temp_dataframe.csv')
-    temp_cleaned_stat=temp_dataframe.describe()
-    print(temp_cleaned_stat,'\n')
-    temp_cleaned_stat.to_csv('data/temp_data/temp_cleaned_data_stat.csv')
+    temp_dataframe.to_csv('data/temp_data/temp_cleaned_dataframe.csv')
+    temp_cleaned_data_stat=temp_dataframe.describe()
+    print('Statistiques intermediaires:')
+    print(temp_cleaned_data_stat,'\n')
+    temp_cleaned_data_stat.to_csv('data/temp_data/temp_cleaned_data_stat.csv')
     
     #Retouches finales
     print('Retouche finales:\n')
     
     #Indicateur
     Runtime=0
+    Reduction_factor=0
     
     #Suppression des X% de valeurs les plus grandes et X% les plus petites afin d'affiner les resultats
     #Definition du paramètre X en %
-    X=5
+    #Le but de cette definition est de retirer au maximum 50 valeurs donc si il y a 1000 données, X=5000/1000=5% soit 50 valeurs
+    X=5000/(init_shape[0])
             
-    while(Runtime==0):
-        
-        
+    while(Runtime<=1000):
         
         #Chargement des parametres temporaires
-        temp_datastat=pd.read_csv('data/temp_data/temp_cleaned_data_stat.csv')
-        
-        #Affichage des parametre pour vérification
-        print('Valeur Runtime:',Runtime)
-        print('Valeur parametre X:',X)
-        print('Valeur Cycle Index ref: Min:',datastat.loc[3,'Cycle_Index'],' Max:',datastat.loc[7,'Cycle_Index'])
-        print('Valeur Cycle Index Max:',temp_datastat.loc[3,'Cycle_Index'])
-        print('Valeur Cycle Index Mix:',temp_datastat.loc[7,'Cycle_Index'],'\n')
+        temp_cleaned_data_stat=pd.read_csv('data/temp_data/temp_cleaned_data_stat.csv')
         
         # Calculer le nombre de lignes à supprimer (X% de la taille du DataFrame)
         nb_lignes_a_supprimer = int(len(dataframe) * X/100)
@@ -114,25 +113,61 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
         # Supprimer les X% les plus élevées et les X% les plus basses
         temp_dataframe = dataframe_sorted.iloc[nb_lignes_a_supprimer:-nb_lignes_a_supprimer]
         
-        temp_cleaned_stat=temp_dataframe.describe()
-        temp_cleaned_stat.to_csv('data/temp_data/temp_cleaned_data_stat.csv')
+        # Trier la colonne 'valeur' par ordre croissant
+        #dataframe_sorted = temp_dataframe.sort_values(by='Discharge Time (s)')
+        #print(dataframe_sorted)
         
-        if(temp_datastat.loc[7,'Cycle_Index']==datastat.loc[3,'Cycle_Index'] and temp_datastat.loc[3,'Cycle_Index']==datastat.loc[7,'Cycle_Index']):
-           Runtime=1
+        temp_data_stat=temp_dataframe.describe()
+        temp_data_stat.to_csv('data/temp_data/temp_data_stat.csv')
+        temp_data_stat=pd.read_csv('data/temp_data/temp_data_stat.csv')
+        
+        #Affichage des parametre pour vérification
+        print('Valeur Runtime:',Runtime)
+        print('Valeur parametre X:',X,'%')
+        print('Valeur Cycle Index Before Last Clean: Min:',temp_cleaned_data_stat.loc[3,'Cycle_Index'],'Max:',temp_cleaned_data_stat.loc[7,'Cycle_Index'])
+        print('Valeur Cycle Index After',X,'% Clean: Min:',temp_data_stat.loc[3,'Cycle_Index'],'Max:',temp_data_stat.loc[7,'Cycle_Index'],'\n')
+        
+        if((temp_data_stat.loc[3,'Cycle_Index'] == temp_cleaned_data_stat.loc[3,'Cycle_Index']) and (temp_data_stat.loc[7,'Cycle_Index'] == temp_cleaned_data_stat.loc[7,'Cycle_Index'])):
+            #Si la verification passe dès le premier tour, il se peut que des valeurs soient enlever en trop
+            if(Runtime==0):
+                print("Reduction factor verif")    
+                Runtime=0
+                Reduction_factor=Reduction_factor+1
+                #La valeur de X diminue en fonction du nombre de fois où la fonction est vérifier directement
+                X=X*(intermediaire_shape[0]/init_shape[0])-X*Reduction_factor/1000
+            else:
+                Runtime=1001
+                temp_data_stat.to_csv('data/temp_data/temp_data_stat.csv')
+                #Enregistrement clean data
+                dataframe=temp_dataframe
+            
+                
         else:
-            X=X/2
+            Runtime=Runtime+1
+            #La valeur de X diminue en fonction du nombre de valeurs qui ont déja été amputé à la base de donnée, la diminution de X s'accélère avec le temps
+            X=X*(intermediaire_shape[0]/init_shape[0])-X*Runtime/1000
+            
+            #Quand la valeur de X est bien trop petite, il ne sert plus a rien de rester dans la boucle
+            if(X<=(100/intermediaire_shape[0])):
+                Runtime=1001
     
-    
-    #Enregistrement clean data
-    dataframe=temp_dataframe
     
     #Affiche les statistiques du fichier cleaned
     cleaned_stat=dataframe.describe()
+    print('Statistiques finales:')
     print(cleaned_stat,'\n')
     cleaned_stat.to_csv(output_cleaned_datastat_path)
     
-    print('Taille finale:',dataframe.shape,'\n')
+    final_shape=dataframe.shape
+    
+    print('Rappel tailles:')
+    print('Taille initiale:',init_shape)
+    print('Moins:',init_shape[0]-intermediaire_shape[0])
+    print('Taille intermediaire:',intermediaire_shape)
+    print('Moins:',intermediaire_shape[0]-final_shape[0])
+    print('Taille finale:',final_shape,'\n')
+    print('Total suppr:',init_shape[0]-final_shape[0])
+    print('% suppr:',round(100*((init_shape[0]-final_shape[0])/init_shape[0]),3),'%\n')
     dataframe.to_csv(output_clean_data_path)
-    
-    
-clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path)
+       
+#clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path)
