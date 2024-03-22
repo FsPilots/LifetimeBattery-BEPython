@@ -1,7 +1,9 @@
+import time
 import pandas as pd
 import cleandata as cd
 import feature_eng as fe
 import modeldata_Reg_Linear as RLmod
+import modeledata_SVM as svm
 
 # Charger le fichier CSV dans un DataFrame
 dataframe = pd.read_csv('rendufinal/data/Battery_RUL.csv')
@@ -32,13 +34,14 @@ def main(choix_fe,choix_model):
     if(choix_model==1):
         RLmod.reglineaire(output_usable_data_path)
     elif(choix_model==2):
-        RLmod.reglineaire(output_usable_data_path)
+        svm.modelregressionGPR(output_usable_data_path)
     elif(choix_model==3):
         RLmod.reglineaire(output_usable_data_path)
     elif(choix_model==4):
         RLmod.reglineaire(output_usable_data_path)
+        svm.modelregressionGPR(output_usable_data_path)
     else:
         print('.....Aucun modèle choisi.....')
     
-
+#Programme
 main(0,1)

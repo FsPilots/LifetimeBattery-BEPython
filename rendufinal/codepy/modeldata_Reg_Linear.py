@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
@@ -6,6 +7,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 def reglineaire(data_path):
     print('.....Modele IA Regression Lineaire.....')
+    # Commencer le chronomètre
+    debut = time.time()
     # Charger les données à partir du fichier CSV
     data = pd.read_csv(data_path)
 
@@ -54,7 +57,13 @@ def reglineaire(data_path):
     axes[1].legend()
     axes[1].grid(True)
 
+    # Arrêter le chronomètre
+    fin = time.time()
+    # Calculer la durée d'entraînement
+    duree = fin - debut
+        
     # Afficher la figure
     plt.tight_layout()
     plt.show()
 
+    
