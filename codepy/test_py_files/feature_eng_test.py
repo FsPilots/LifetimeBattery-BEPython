@@ -58,3 +58,33 @@ plt.figure(figsize=(10, 8))
 sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", square=True)
 plt.title('Heatmap de la matrice de corrélation')
 plt.show()
+
+
+
+
+
+
+# Recherche des colonnes avec une corrélation supérieure à 0.99
+redundant_columns = set()
+for i in range(len(correlation_matrix.columns) - 1):  # Ignorer la dernière colonne
+    for j in range(i+1, len(correlation_matrix.columns) - 1):  # Commence à i+1 pour éviter de considérer les valeurs de la diagonale
+        if abs(correlation_matrix.iloc[i, j]) > 0.98:
+            col_i = correlation_matrix.columns[i]
+            col_j = correlation_matrix.columns[j]
+            redundant_columns.add((col_i, col_j))  # Ajoute un tuple pour garder une trace des paires de colonnes redondantes
+
+# Affichage des colonnes redondantes
+print("Colonnes redondantes :")
+print(redundant_columns)
+
+# Suppression des colonnes redondantes
+for col_pair in redundant_columns:
+    # On supprime seulement une des colonnes de chaque paire, en excluant la première colonne du tableau
+    if col_pair[1] in df.columns[1:]:
+        df.drop(col_pair[1], axis=1, inplace=True)
+
+# Affichage du DataFrame après suppression des colonnes redondantes
+print("DataFrame après suppression des colonnes redondantes :")
+print(df.head())
+print (df.shape)
+df
