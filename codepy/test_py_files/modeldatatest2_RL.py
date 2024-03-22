@@ -4,13 +4,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-#Définir un chemin de sortie des données clean
-output_clean_data_path='data/test_data/output_main/Battery_RUI_sortie_main_test.csv'
-
-def reglineaire(output_clean_data_path):
+def reglineaire(data_path):
     print('Modele IA Regression Lineaire...')
     # Charger les données à partir du fichier CSV
-    data = pd.read_csv(output_clean_data_path)
+    data = pd.read_csv(data_path)
 
     # Séparer les caractéristiques (X) et les étiquettes (y)
     X = data.drop('RUL', axis=1)  # Supprimer la colonne RUL pour obtenir les caractéristiques
