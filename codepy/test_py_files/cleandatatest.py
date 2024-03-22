@@ -47,8 +47,8 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     datastat = pd.read_csv(output_init_datastat_path)
     
     #Affiche les premières valeurs pour vérifier la bonne lecture du fichier
-    print('Affichage valeurs pour confirmer la bonne lecture:')
-    print(datastat.head(),'\n')
+    #print('Affichage valeurs pour confirmer la bonne lecture:')
+    #print(datastat.head(),'\n')
     
     print('Moyenne des parametres initiaux:')
     print('Discharge Time (s):',datastat.loc[1,'Discharge Time (s)'])
@@ -77,18 +77,18 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     
     #Indication taille avant retouche finales
     intermediaire_shape=dataframe.shape
-    print('Taille intermediaire:',intermediaire_shape,'\n')
+    #print('Taille intermediaire:',intermediaire_shape,'\n')
     
     #Sauvegarde intermediaire du fichier cleaned
     temp_dataframe=dataframe
     temp_dataframe.to_csv('data/temp_data/temp_cleaned_dataframe.csv')
     temp_cleaned_data_stat=temp_dataframe.describe()
-    print('Statistiques intermediaires:')
-    print(temp_cleaned_data_stat,'\n')
+    #print('Statistiques intermediaires:')
+    #print(temp_cleaned_data_stat,'\n')
     temp_cleaned_data_stat.to_csv('data/temp_data/temp_cleaned_data_stat.csv')
     
     #Retouches finales
-    print('Retouche finales:\n')
+    #print('Retouche finales:\n')
     
     #Indicateur
     Runtime=0

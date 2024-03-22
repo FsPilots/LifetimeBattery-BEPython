@@ -33,7 +33,7 @@ def reglineaire(output_clean_data_path):
     mse = mean_squared_error(y_test, predictions)
     r2 = r2_score(y_test, predictions)
     print("Erreur quadratique moyenne :", mse)
-    print("Coefficient de détermination (R2) :", r2)
+    print("Coefficient de determination (R2) :", r2)
 
 
     # Créer une nouvelle figure avec deux sous-graphiques
