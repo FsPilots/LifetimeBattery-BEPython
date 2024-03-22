@@ -4,12 +4,10 @@ def modelregressionGPR(dataframe,output_clean_data_path,output_init_datastat_pat
 data='data/test_data/output_main/cleaned_data_stat_main_test.csv'
 
 import numpy as np
-import GPy
 import pandas as pd
 import time
-
-# Installer la bibliothèque GPy
-!pip install gpy
+import GPy
+import matplotlib.pyplot as plt
 
 # Charger toutes les colonnes du fichier data.csv
 data = pd.read_csv('data.csv')
@@ -23,17 +21,12 @@ split_index = len(X) // 4
 X_train, X_test = X[:split_index], X[split_index:]
 Y_train, Y_test = Y[:split_index], Y[split_index:]
 
-# Créer le modèle de régression GPR avec kriging
-kernel = GPy.kern.RBF(input_dim=X_train.shape[1], variance=1., lengthscale=1.)
+# Créer le modèle de régression GPR avec un noyau linéaire
+kernel = GPy.kern.Linear(input_dim=X_train.shape[1])
 model = GPy.models.GPRegression(X_train, Y_train, kernel)
 
-# Supprimer les contraintes existantes des paramètres du modèle
-model.unconstrain()
-# Ajouter une régularisation L2 (Ridge) au modèle
-alpha = 0.1
-model.rbf.variance.set_prior(GPy.priors.Gaussian(0., alpha))
-model.rbf.lengthscale.set_prior(GPy.priors.Gaussian(0., alpha))
-model.Gaussian_noise.variance.set_prior(GPy.priors.Gaussian(0., alpha))
+# Optimisation des hyperparamètres
+model.optimize_restarts(num_restarts=5, verbose=True)
 
 # Mesurer le temps d'entraînement
 start_time = time.time()
@@ -48,8 +41,29 @@ train_accuracy = np.mean(np.abs(mean_train - Y_train))
 mean_test, _ = model.predict(X_test)
 test_accuracy = np.mean(np.abs(mean_test - Y_test))
 
+# Tracer les prédictions par rapport aux valeurs réelles pour l'ensemble d'entraînement
+plt.figure(figsize=(10, 6))
+plt.scatter(Y_train, mean_train, color='blue', label='Prédiction (Entraînement)')
+plt.plot([Y_train.min(), Y_train.max()], [Y_train.min(), Y_train.max()], '--', color='gray', label='Valeurs réelles')
+plt.xlabel('Valeurs réelles')
+plt.ylabel('Prédictions')
+plt.title('Prédictions vs Valeurs Réelles (Entraînement)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Tracer les prédictions par rapport aux valeurs réelles pour l'ensemble de test
+plt.figure(figsize=(10, 6))
+plt.scatter(Y_test, mean_test, color='red', label='Prédiction (Test)')
+plt.plot([Y_test.min(), Y_test.max()], [Y_test.min(), Y_test.max()], '--', color='gray', label='Valeurs réelles')
+plt.xlabel('Valeurs réelles')
+plt.ylabel('Prédictions')
+plt.title('Prédictions vs Valeurs Réelles (Test)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
 print(f"Temps d'entraînement : {training_time:.2f} secondes")
 print(f"Précision de la prédiction sur l'ensemble d'entraînement : {train_accuracy:.4f}")
 print(f"Précision de la prédiction sur l'ensemble de test : {test_accuracy:.4f}")
-
 
