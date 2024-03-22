@@ -1,7 +1,7 @@
+def modelregressionGPR(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path):
 
-
-
-
+#Définir un chemin de sortie des statistiques finales
+data='data/test_data/output_main/cleaned_data_stat_main_test.csv'
 
 
 import numpy as np
