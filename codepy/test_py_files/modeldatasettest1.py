@@ -4,12 +4,9 @@ def modelregressionGPR(dataframe,output_clean_data_path,output_init_datastat_pat
 data='data/test_data/output_main/cleaned_data_stat_main_test.csv'
 
 import numpy as np
-import GPy
 import pandas as pd
 import time
 
-# Installer la bibliothèque GPy
-!pip install gpy
 
 # Charger toutes les colonnes du fichier data.csv
 data = pd.read_csv('data.csv')

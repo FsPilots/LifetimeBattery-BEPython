@@ -13,7 +13,7 @@ output_init_datastat_path='data/test_data/output_test1/init_stat1.csv'
 output_cleaned_datastat_path='data/test_data/output_test1/cleaned_data_stat1.csv'
 
 #Tri des données
-def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path):
+def clean_data(dataframe,output_clean_data_path):
     
     #Affiche les premières valeurs pour vérifier la bonne lecture du fichier
     print('Affichage valeurs pour confirmer la bonne lecture:')
@@ -170,4 +170,3 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
     print('% suppr:',round(100*((init_shape[0]-final_shape[0])/init_shape[0]),3),'%\n')
     dataframe.to_csv(output_clean_data_path)
        
-#clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output_cleaned_datastat_path)
