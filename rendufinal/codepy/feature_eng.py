@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def feature_eng(clean_data_path,usable_data_path):
-    print('Feature Engineering / Analyses...')
+    print('.....Feature Engineering / Analyses.....')
 
     # Chargement des données dans un DataFrame Pandas
     # Assurez-vous de charger vos propres données ou d'utiliser un jeu de données de démonstration

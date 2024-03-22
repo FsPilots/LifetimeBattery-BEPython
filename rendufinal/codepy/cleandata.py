@@ -8,6 +8,7 @@ output_cleaned_datastat_path='data/test_data/output_test1/cleaned_data_stat1.csv
 
 #Tri des données
 def clean_data(dataframe,output_clean_data_path):
+    print('.....Nettoyage des donnees.....')
     
     #Affiche les premières valeurs pour vérifier la bonne lecture du fichier
     print('Affichage valeurs pour confirmer la bonne lecture:')

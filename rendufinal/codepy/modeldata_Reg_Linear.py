@@ -5,7 +5,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
 def reglineaire(data_path):
-    print('Modele IA Regression Lineaire...')
+    print('.....Modele IA Regression Lineaire.....')
     # Charger les données à partir du fichier CSV
     data = pd.read_csv(data_path)
 
