@@ -122,15 +122,15 @@ def clean_data(dataframe,output_clean_data_path,output_init_datastat_path,output
         temp_data_stat=pd.read_csv('data/temp_data/temp_data_stat.csv')
         
         #Affichage des parametre pour vérification
-        print('Valeur Runtime:',Runtime)
-        print('Valeur parametre X:',X,'%')
-        print('Valeur Cycle Index Before Last Clean: Min:',temp_cleaned_data_stat.loc[3,'Cycle_Index'],'Max:',temp_cleaned_data_stat.loc[7,'Cycle_Index'])
-        print('Valeur Cycle Index After',X,'% Clean: Min:',temp_data_stat.loc[3,'Cycle_Index'],'Max:',temp_data_stat.loc[7,'Cycle_Index'],'\n')
+        #print('Valeur Runtime:',Runtime)
+        #print('Valeur parametre X:',X,'%')
+        #print('Valeur Cycle Index Before Last Clean: Min:',temp_cleaned_data_stat.loc[3,'Cycle_Index'],'Max:',temp_cleaned_data_stat.loc[7,'Cycle_Index'])
+        #print('Valeur Cycle Index After',X,'% Clean: Min:',temp_data_stat.loc[3,'Cycle_Index'],'Max:',temp_data_stat.loc[7,'Cycle_Index'],'\n')
         
         if((temp_data_stat.loc[3,'Cycle_Index'] == temp_cleaned_data_stat.loc[3,'Cycle_Index']) and (temp_data_stat.loc[7,'Cycle_Index'] == temp_cleaned_data_stat.loc[7,'Cycle_Index'])):
             #Si la verification passe dès le premier tour, il se peut que des valeurs soient enlever en trop
             if(Runtime==0):
-                print("Reduction factor verif")    
+                #print("Reduction factor verif")    
                 Runtime=0
                 Reduction_factor=Reduction_factor+1
                 #La valeur de X diminue en fonction du nombre de fois où la fonction est vérifier directement
