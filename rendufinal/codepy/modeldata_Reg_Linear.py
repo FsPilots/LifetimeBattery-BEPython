@@ -7,8 +7,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 def reglineaire(data_path):
     print('.....Modele IA Regression Lineaire.....')
-    # Commencer le chronomètre
-    debut = time.time()
     # Charger les données à partir du fichier CSV
     data = pd.read_csv(data_path)
 
@@ -23,18 +21,22 @@ def reglineaire(data_path):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Créer et entraîner le modèle de régression linéaire
+    start_time = time.time()
     model = LinearRegression()
     model.fit(X_train, y_train)
+    training_time = time.time() - start_time
 
     # Faire des prédictions sur l'ensemble de test
     predictions = model.predict(X_test)
 
+    # Mesurer le temps d'entraînement
+    print(f"Temps d'entrainement : {training_time:.2f} secondes")
+    
     # Évaluer la performance du modèle
     mse = mean_squared_error(y_test, predictions)
-    r2 = r2_score(y_test, predictions)
+    test_accuracy = r2_score(y_test, predictions)
     print("Erreur quadratique moyenne :", mse)
-    print("Coefficient de determination (R2) :", r2)
-
+    print("Precision de la prediction sur l'ensemble de test' (Coef R2) :", test_accuracy)
 
     # Créer une nouvelle figure avec deux sous-graphiques
     fig, axes = plt.subplots(1, 2, figsize=(16, 6))
@@ -56,14 +58,10 @@ def reglineaire(data_path):
     axes[1].set_ylabel('RUL Prédit')
     axes[1].legend()
     axes[1].grid(True)
-
-    # Arrêter le chronomètre
-    fin = time.time()
-    # Calculer la durée d'entraînement
-    duree = fin - debut
         
     # Afficher la figure
     plt.tight_layout()
-    plt.show()
-
+    plt.savefig('rendufinal/doc/resultats/figure_reg_lineaire.png')
+    #plt.show()
     
+    return(round(test_accuracy,4),round(training_time,4))

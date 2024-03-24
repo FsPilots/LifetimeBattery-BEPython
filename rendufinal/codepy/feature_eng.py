@@ -35,7 +35,9 @@ def feature_eng(clean_data_path,usable_data_path):
     plt.xlabel('Composante principale')
     plt.ylabel('Pourcentage de variance expliquée')
     plt.title('Pourcentage de variance expliquée par composante principale')
-    plt.show()
+    plt.savefig('rendufinal/doc/resultats/pourcentage_variance.png')
+    #plt.show()
+    
 
     # Analyse des composantes principales
     # Vous pouvez examiner les composantes principales pour comprendre les relations entre les variables originales et les composantes
@@ -51,7 +53,9 @@ def feature_eng(clean_data_path,usable_data_path):
     plt.figure(figsize=(10, 8))
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", square=True)
     plt.title('Heatmap de la matrice de correlation')
-    plt.show()
+    plt.savefig('rendufinal/doc/resultats/matrice_corr.png')
+    #plt.show()
+    
 
     # Recherche des colonnes avec une corrélation supérieure à 0.99
     redundant_columns = set()
@@ -73,7 +77,7 @@ def feature_eng(clean_data_path,usable_data_path):
             df.drop(col_pair[1], axis=1, inplace=True)
 
     # Affichage du DataFrame après suppression des colonnes redondantes
-    print("DataFrame après suppression des colonnes redondantes :")
+    print("DataFrame apres suppression des colonnes redondantes :")
     print(df.head())
     print (df.shape)
     df.to_csv(usable_data_path)

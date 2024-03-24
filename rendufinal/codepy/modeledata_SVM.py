@@ -7,8 +7,6 @@ import matplotlib.pyplot as plt
 
 def modelregressionGPR(data_path):
     print('.....Modele IA SVM.....')
-    # Commencer le chronomètre
-    debut = time.time()
     # Charger toutes les colonnes du fichier data.csv
     data = pd.read_csv(data_path)
 
@@ -55,9 +53,6 @@ def modelregressionGPR(data_path):
     plt.ylabel('Predictions')
     plt.title('Test Set Performance')
 
-    plt.tight_layout()
-    plt.show()
-
     # Mesurer le temps d'entraînement
     print(f"Temps d'entrainement : {training_time:.2f} secondes")
 
@@ -68,4 +63,12 @@ def modelregressionGPR(data_path):
     # Précision de la prédiction sur l'ensemble de test
     test_accuracy = best_svm.score(X_test, Y_test)
     print(f"Precision de la prediction sur l'ensemble de test : {test_accuracy:.4f}")
+    
+    plt.tight_layout()
+    plt.savefig('rendufinal/doc/resultats/figure_SVM.png')
+    #plt.show()
+    
+    return(round(test_accuracy,4),round(training_time,4))
+
+    
     
