@@ -28,7 +28,7 @@ def analyse_result(result_reg,result_svm,result_gau,prior_result,data_path):
         elif(i==2):
             result=result_gau[0]
             time=result_gau[1]
-        if(result<0 or time<0):
+        if(result<0 or time<0 or result>1):
             print('Resultat',i+1,'inutilisable')
             i=i+1
         else:

@@ -43,7 +43,7 @@ def modelregressionGPR(data_path):
     # Précision de la prédiction sur l'ensemble de test
     mean_test, _ = model.predict(X_test)
     test_accuracy = np.mean(np.abs(mean_test - Y_test))
-
+    
     print(f"Temps d'entrainement : {training_time:.2f} secondes")
     print(f"Precision de la prediction sur l'ensemble d'entrainement : {train_accuracy:.4f}")
     print(f"Precision de la prediction sur l'ensemble de test : {test_accuracy:.4f}")

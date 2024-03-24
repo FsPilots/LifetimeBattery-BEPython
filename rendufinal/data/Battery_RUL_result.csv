@@ -1,4 +1,4 @@
 ,Modele_name,Test_Accuracy,Training_time,Coef_Perfo,Unnamed: 4
-0,Regression Lineaire,0.9996,0.007,29.571028571428567,
-1,Modele SVM,0.0,0.0,0.0,
+0,Regression Lineaire,0.9996,0.003,67.66626666666666,
+1,Modele SVM,0.9941,112.169,0.9958830238301135,
 2,Processus Gaussien,0.0,0.0,0.0,
