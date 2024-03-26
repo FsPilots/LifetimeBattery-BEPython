@@ -6,7 +6,7 @@ import time
 import matplotlib.pyplot as plt
 
 def modelregressionGPR(data_path):
-    print('.....Modele IA SVM.....')
+    print('\n.....Modele IA SVM.....')
     # Charger toutes les colonnes du fichier data.csv
     data = pd.read_csv(data_path)
 

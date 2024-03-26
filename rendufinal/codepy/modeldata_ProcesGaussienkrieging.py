@@ -5,7 +5,7 @@ import time
 
 
 def modelregressionGPR(data_path):
-    print('.....Modele IA Processus Gaussien.....')
+    print('\n.....Modele IA Processus Gaussien.....')
     
     # Charger toutes les colonnes du fichier data.csv
     data = pd.read_csv(data_path)

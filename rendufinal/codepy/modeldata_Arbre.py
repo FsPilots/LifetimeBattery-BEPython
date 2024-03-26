@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
@@ -5,10 +6,11 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeRegressor, plot_tree
 
 def abre_de_regression(outputcleandata_path):
-
+    print('\n.....Modele IA Arbre.....')
+    
     # Chargement des données à partir d'un fichier CSV
     data = pd.read_csv(outputcleandata_path)
-    print("Colonnes du DataFrame :", data.columns)
+    #print("Colonnes du DataFrame :", data.columns)
 
     # Diviser les données en ensembles d'entraînement et de test
     X = data.drop(columns=['RUL'])  # Features
@@ -18,10 +20,10 @@ def abre_de_regression(outputcleandata_path):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Affichage des dimensions des ensembles d'entraînement et de test
-    print("Taille de l'ensemble d'entraînement X :", X_train.shape)
-    print("Taille de l'ensemble de test X :", X_test.shape)
-    print("Taille de l'ensemble d'entraînement y :", y_train.shape)
-    print("Taille de l'ensemble de test y :", y_test.shape)
+    #print("Taille de l'ensemble d'entraînement X :", X_train.shape)
+    #print("Taille de l'ensemble de test X :", X_test.shape)
+    #print("Taille de l'ensemble d'entraînement y :", y_train.shape)
+    #print("Taille de l'ensemble de test y :", y_test.shape)
 
     # Définir la grille de paramètres à explorer
     param_grid = {
@@ -29,6 +31,7 @@ def abre_de_regression(outputcleandata_path):
     }
 
     # Créer le modèle d'arbre de régression
+    start_time = time.time()
     tree_reg = DecisionTreeRegressor()
 
     # Effectuer une recherche de grille avec validation croisée
@@ -37,25 +40,31 @@ def abre_de_regression(outputcleandata_path):
     grid_search.fit(X_train, y_train)
 
     # Afficher les meilleurs paramètres trouvés
-    print("Meilleurs paramètres :", grid_search.best_params_)
+    #print("Meilleurs paramètres :", grid_search.best_params_)
 
     # Utiliser le meilleur modèle pour prédire sur l'ensemble de test
     best_model = grid_search.best_estimator_
 
+    training_time = time.time() - start_time
+    
     # Prédiction sur l'ensemble de test
     y_pred = best_model.predict(X_test)
 
+
+    # Mesurer le temps d'entraînement
+    print(f"Temps d'entrainement : {training_time:.2f} secondes")
+    
     # Calcul de l'erreur quadratique moyenne
     mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+    test_accuracy = r2_score(y_test, y_pred)
     print("Erreur quadratique moyenne:", mse)
-    print("R^2:", r2)
+    print("Precision de la prediction sur l'ensemble de test' (Coef R2) :", test_accuracy)
 
     # Vous pouvez également visualiser l'arbre de régression si vous le souhaitez
     plt.figure(figsize=(20, 20))
     plot_tree(best_model, filled=True, feature_names=X.columns, rounded=True, precision=2)
-    plt.show()
-    plt.savefig("regression_tree.png")  # Exportez l'arbre en tant qu'image PNG
+    #plt.show()
+    plt.savefig("rendufinal/doc/resultats/figure_regression_tree.png")  # Exportez l'arbre en tant qu'image PNG
 
     #PERFORMANCES
     depths = [3, 5, 7, 9, 11]
@@ -88,19 +97,21 @@ def abre_de_regression(outputcleandata_path):
     plt.plot(depths, mse_scores, label='MSE', marker='o')
     plt.xlabel('Profondeur de l\'arbre MSE')
     plt.ylabel('Performance')
-    plt.title('Performance du modèle en fonction de la profondeur de l\'arbre')
+    plt.title('Performance du modèle en fonction de la profondeur de l\'arbre (MSE)')
     plt.legend()
     plt.grid(True)
-    plt.show()
+    #plt.show()
+    plt.savefig("rendufinal/doc/resultats/perfo_MSE_regression_tree.png")
 
     plt.figure(figsize=(10, 5))
     plt.plot(depths, r2_scores, label='R²', marker='o')
     plt.xlabel('Profondeur de l\'arbre R²')
     plt.ylabel('Performance')
-    plt.title('Performance du modèle en fonction de la profondeur de l\'arbre')
+    plt.title('Performance du modèle en fonction de la profondeur de l\'arbre (R^2)')
     plt.legend()
     plt.grid(True)
-    plt.show()
+    #plt.show()
+    plt.savefig("rendufinal/doc/resultats/perfo_r2_regression_tree.png")
 
     # Initialiser des listes pour enregistrer les performances
     train_errors = []
@@ -133,12 +144,7 @@ def abre_de_regression(outputcleandata_path):
     plt.title('Courbes d\'apprentissage')
     plt.legend()
     plt.grid(True)
-    plt.show()
-
-#RUN
-output_clean_data_path = 'C:/Users/thoma/Documents/GitHub/LifetimeBattery-BEPython/data/test_data/output_main/Battery_RUI_sortie_main_test.csv'
-
-#Définir un chemin de sortie des données clean
-output_clean_data_path='data/test_data/output_main/Battery_RUI_sortie_main_test.csv'
-
-abre_de_regression(output_clean_data_path)
+    #plt.show()
+    plt.savefig("rendufinal/doc/resultats/perfo_error_regression_tree.png")  # Exportez l'arbre en tant qu'image PNG
+    
+    return(round(test_accuracy,4),round(training_time,4))

@@ -5,6 +5,7 @@ import modeldata_Reg_Linear as RLmod
 import modeledata_SVM as svm
 import modeldata_ProcesGaussienkrieging as Gau
 import analyse_result as ar
+import modeldata_Arbre as ma
 
 # Charger le fichier CSV dans un DataFrame
 dataframe = pd.read_csv('rendufinal/data/Battery_RUL.csv')
@@ -22,6 +23,7 @@ output_result_data_path='rendufinal/data/Battery_RUL_result.csv'
 # 1 - Modèle Regression Lineaire
 # 2 - Modèle SVM
 # 3 - Modèle Processus Gaussien
+# 4 - Modèle Arbre de Regression
 # 4 - Entrainer les 3 modèles
 
 def main(choix_fe,choix_model):
@@ -40,6 +42,7 @@ def main(choix_fe,choix_model):
     result_Reg_Linear=(-1,-1)
     result_SVM=(-1,-1)
     result_Proces_Gaussien=(-1,-1)
+    result_Arbre_Reg=(-1,-1)
     
     if(choix_model==1):
         result_Reg_Linear=RLmod.reglineaire(output_usable_data_path)
@@ -48,9 +51,13 @@ def main(choix_fe,choix_model):
     elif(choix_model==3):
         result_Proces_Gaussien=Gau.modelregressionGPR(output_usable_data_path)
     elif(choix_model==4):
+        result_Arbre_Reg=ma.abre_de_regression(output_usable_data_path)
+        print(result_Arbre_Reg)
+    elif(choix_model==5):
         result_Reg_Linear=RLmod.reglineaire(output_usable_data_path)
         result_SVM=svm.modelregressionGPR(output_usable_data_path)
         result_Proces_Gaussien=Gau.modelregressionGPR(output_usable_data_path)
+        result_Arbre_Reg=ma.abre_de_regression(output_usable_data_path)
     else:
         print('.....Aucun modèle choisi.....')
         
@@ -58,10 +65,10 @@ def main(choix_fe,choix_model):
     #La variable priority result permet de définir l'importance de la précision du modèle par rapport à son temps d'entrainement.
     #Exprimé en %
     priority_result=80
-    ar.analyse_result(result_Reg_Linear,result_SVM,result_Proces_Gaussien,priority_result,output_result_data_path)
+    ar.analyse_result(result_Reg_Linear,result_SVM,result_Proces_Gaussien,result_Arbre_Reg,priority_result,output_result_data_path)
     
 #Programme
 #main(Choix affichage FE; Choix execution modèle IA)
 #main(1,4) est a lancé pour activer l'ensemble du programme et les 3 modèles 
 #Attention, temps de compilation du Modlèle Proces Gaussien Long
-main(1,4)
+main(0,5)
