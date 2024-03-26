@@ -34,7 +34,7 @@ def main(choix_fe,choix_model):
     if(choix_fe==1):
         fe.feature_eng(output_clean_data_path,output_usable_data_path)
     else:
-        print('.....Visualisation du feature engineering non affichee.....\n')
+        print('.....Visualisation du feature engineering non affichee.....')
 
     #Etape 3: Entrainement modèle IA et Analyse resultats
     
@@ -59,7 +59,7 @@ def main(choix_fe,choix_model):
         result_Proces_Gaussien=Gau.modelregressionGPR(output_usable_data_path)
         result_Arbre_Reg=ma.abre_de_regression(output_usable_data_path)
     else:
-        print('.....Aucun modèle choisi.....')
+        print('\n.....Aucun modèle choisi.....')
         
     #Etape 4: Analyse des resultats
     #La variable priority result permet de définir l'importance de la précision du modèle par rapport à son temps d'entrainement.
@@ -71,4 +71,4 @@ def main(choix_fe,choix_model):
 #main(Choix affichage FE; Choix execution modèle IA)
 #main(1,4) est a lancé pour activer l'ensemble du programme et les 3 modèles 
 #Attention, temps de compilation du Modlèle Proces Gaussien Long
-main(0,5)
+main(1,5)
