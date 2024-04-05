@@ -65,10 +65,10 @@ def main(choix_fe,choix_model):
     #La variable priority result permet de définir l'importance de la précision du modèle par rapport à son temps d'entrainement.
     #Exprimé en %
     priority_result=80
-    ar.analyse_result(result_Reg_Linear,result_SVM,result_Proces_Gaussien,result_Arbre_Reg,priority_result,output_result_data_path)
+    #ar.analyse_result(result_Reg_Linear,result_SVM,result_Proces_Gaussien,result_Arbre_Reg,priority_result,output_result_data_path)
     
 #Programme
 #main(Choix affichage FE; Choix execution modèle IA)
-#main(1,4) est a lancé pour activer l'ensemble du programme et les 3 modèles 
+#main(1,5) est a lancé pour activer l'ensemble du programme et les 3 modèles 
 #Attention, temps de compilation du Modlèle Proces Gaussien Long
 main(1,5)
