@@ -15,8 +15,6 @@ def abre_de_regression(outputcleandata_path):
     # Diviser les données en ensembles d'entraînement et de test
     X = data.drop(columns=['RUL'])  # Features
     y = data['RUL']  # Target variable
-
-    # Utiliser train_test_split pour diviser les données
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Affichage des dimensions des ensembles d'entraînement et de test
